@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlmodel import Session, select
-from .model import Address, Company, Employees, Salary, Tax, Course, Seat, Student, Registration, Discount, Fee, Payment, Package, Penalty, Placement, Batch, Attendance, Assignment, Result, Inquiry, Certification
+from .model import Address, Company, Employees, Salary, Tax, Course, Seat, Student, Registration, Discount, Fee, Payment, Package, Penalty, Placement, Batch, Attendance, Assignment, Result, Inquiry, Certification, Feedback
 from .database import get_session
 
 
@@ -40,7 +40,7 @@ def delete_address(address_id : int, session : Session = Depends(get_session)):
     return address
 
 @app.put("/address")
-def update_transfer(data: Address, session: Session = Depends(get_session)):
+def update_address(data: Address, session: Session = Depends(get_session)):
     address =  session.exec(select(Address)).all()
     if not address:
         raise HTTPException(status_code=404, detail="address not found")
@@ -53,7 +53,6 @@ def update_transfer(data: Address, session: Session = Depends(get_session)):
 
     session.commit()
 
-    # [session.refresh(t) for t in transfer]
     for a in address:
         session.refresh(a)
 
@@ -121,7 +120,7 @@ def update_company(data: Company, session: Session = Depends(get_session)):
 
     session.commit()
 
-    # [session.refresh(t) for t in transfer]
+ 
     for c in company:
         session.refresh(c)
 
@@ -143,7 +142,7 @@ def update_company(id: int, data :  Company, session: Session = Depends(get_sess
 
 
 @app.post("/Employees")
-def create_Employees(employees: Employees, session: Session = Depends(get_session)):
+def create_employees(employees: Employees, session: Session = Depends(get_session)):
     session.add(employees)
     session.commit()
     session.refresh(employees)
@@ -190,7 +189,6 @@ def update_employees(data: Employees, session: Session = Depends(get_session)):
 
     session.commit()
 
-    # [session.refresh(t) for t in transfer]
     for e in employees:
         session.refresh(e)
 
@@ -262,7 +260,7 @@ def update_salary(data: Salary, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+
    for s in salary:
         session.refresh(s)
 
@@ -333,7 +331,7 @@ def update_tax(data: Tax, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for ta in tax:
         session.refresh(ta)
 
@@ -364,7 +362,7 @@ def create_course(course: Course, session: Session = Depends(get_session)):
     return course
 
 @app.get("/course{course_id}")
-def get_tax(course_id : int, session : Session = Depends(get_session)):
+def get_course(course_id : int, session : Session = Depends(get_session)):
     course = session.get(Course,course_id)
     return course
 
@@ -383,15 +381,15 @@ def delete_course(session : Session = Depends(get_session)):
 
 @app.delete("course{course_id}",status_code  = 204)
 def delete_course(course_id : int, session : Session = Depends(get_session)):
-    tax = session.get(Course,course_id)
-    if not tax:
+    course = session.get(Course,course_id)
+    if not course:
         raise HTTPException(status_code = 404, details = "course not found")
-    session.delete(tax)
+    session.delete(course)
     session.commit()
-    return tax
+    return course
 
 @app.put("/course")
-def update_tax(data: Course, session: Session = Depends(get_session)):
+def update_course(data: Course, session: Session = Depends(get_session)):
    course =  session.exec(select(Course)).all()
    if not course:
         raise HTTPException(status_code=404, detail="course not found")
@@ -404,7 +402,7 @@ def update_tax(data: Course, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for c in course:
         session.refresh(c)
 
@@ -438,7 +436,7 @@ def create_seat(seat: Seat, session: Session = Depends(get_session)):
 @app.get("/seat{seat_id}")
 def get_seat(seat_id : int, session : Session = Depends(get_session)):
     seat = session.get(Seat,seat_id)
-    return Seat
+    return seat
 
 @app.get("/seat")
 def get_seat(session : Session = Depends(get_session)):
@@ -463,7 +461,7 @@ def delete_seat(seat_id : int, session : Session = Depends(get_session)):
     return seat
 
 @app.put("/seat")
-def update_tax(data: Seat, session: Session = Depends(get_session)):
+def update_seat(data: Seat, session: Session = Depends(get_session)):
    seat =  session.exec(select(Seat)).all()
    if not seat:
         raise HTTPException(status_code=404, detail="seat not found")
@@ -476,7 +474,7 @@ def update_tax(data: Seat, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for se in seat:
         session.refresh(se)
 
@@ -498,7 +496,7 @@ def update_seat(seat_id: int, data : Seat, session: Session = Depends(get_sessio
 
 
 @app.post("/Student")
-def create_seat(student: Student, session: Session = Depends(get_session)):
+def create_student(student: Student, session: Session = Depends(get_session)):
     session.add(student)
     session.commit()
     session.refresh(student)
@@ -545,14 +543,14 @@ def update_student(data: Student, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for st in student:
         session.refresh(st)
 
    return student
 
 @app.put("/student/{student_id}")
-def update_course(student_id: int, data : Student, session: Session = Depends(get_session)):
+def update_student(student_id: int, data : Student, session: Session = Depends(get_session)):
     student = session.get(Student, student_id)
     if not student:
         raise HTTPException(status_code=404, detail="student not found")
@@ -619,7 +617,7 @@ def update_registration(data: Registration, session: Session = Depends(get_sessi
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+   
    for r in registration:
         session.refresh(r)
 
@@ -690,7 +688,7 @@ def update_discount(data: Discount, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+   
    for d in discount:
         session.refresh(d)
 
@@ -758,7 +756,7 @@ def update_penalty(data: Penalty, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for p in  penalty:
         session.refresh(p)
 
@@ -831,16 +829,16 @@ def update_Fee(data: Fee, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for f in  fee:
         session.refresh(f)
 
    return  fee
 
 
-@app.put("/fee/{id}")
-def update_penalty(id: int, data : Fee, session: Session = Depends(get_session)):
-    fee = session.get(Fee, id)
+@app.put("/fee/{fee_id}")
+def update_fee(fee_id: int, data : Fee, session: Session = Depends(get_session)):
+    fee = session.get(Fee, fee_id)
     if not  fee:
         raise HTTPException(status_code=404, detail="fee not found")
     
@@ -862,7 +860,7 @@ def create_Payment(payment : Payment, session: Session = Depends(get_session)):
     session.refresh(payment)
     return payment
 
-@app.get("/payment{_id}")
+@app.get("/payment{payment_id}")
 def get_payment(payment_id : int, session : Session = Depends(get_session)):
     payment  =  session.get(Payment,payment_id)
     return payment
@@ -902,16 +900,16 @@ def update_payment(data: Payment, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for p in  payment:
         session.refresh(p)
 
    return  payment
 
 
-@app.put("/payment/{id}")
-def update_payment(id: int, data : Payment, session: Session = Depends(get_session)):
-    payment = session.get(Payment, id)
+@app.put("/payment/{payment_id}")
+def update_payment(payment_id: int, data : Payment, session: Session = Depends(get_session)):
+    payment = session.get(Payment, payment_id)
     if not  payment:
         raise HTTPException(status_code=404, detail="payment not found")
     
@@ -973,7 +971,7 @@ def update_certification(data: Certification, session: Session = Depends(get_ses
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+   
    for ce in  certification:
         session.refresh(ce)
 
@@ -1044,7 +1042,7 @@ def update_placement(data: Placement, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for pla in  placement:
         session.refresh(pla)
 
@@ -1112,7 +1110,7 @@ def update_package(data: Package, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+   
    for pa in  package:
         session.refresh(pa)
 
@@ -1180,7 +1178,7 @@ def update_batch(data: Batch, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for b in  batch:
         session.refresh(b)
 
@@ -1201,7 +1199,7 @@ def update_batch(id: int, data : Batch, session: Session = Depends(get_session))
 
 
 @app.post("/Attendance")
-def create_Batch(attendance : Attendance, session: Session = Depends(get_session)):
+def create_attendance(attendance : Attendance, session: Session = Depends(get_session)):
     session.add(attendance)
     session.commit()
     session.refresh(attendance)
@@ -1245,7 +1243,7 @@ def update_attendance(data: Attendance, session: Session = Depends(get_session))
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for a in  attendance:
         session.refresh(a)
 
@@ -1314,7 +1312,7 @@ def update_assignment(data: Assignment, session: Session = Depends(get_session))
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for ass in  assignment:
         session.refresh(ass)
 
@@ -1380,7 +1378,7 @@ def update_result(data: Result, session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+   
    for r in  result:
         session.refresh(r)
 
@@ -1445,7 +1443,7 @@ def update_inquiry(data: Inquiry , session: Session = Depends(get_session)):
 
    session.commit()
 
-    # [session.refresh(t) for t in transfer]
+    
    for i in  inquiry :
         session.refresh(i)
 
@@ -1464,3 +1462,105 @@ def update_inquiry(id: int, data : Inquiry , session: Session = Depends(get_sess
     
     return inquiry
  
+@app.put("/inquiry/{id}")
+def update_inquiry(inquiry_id  : int, data = Inquiry,session : Session = Depends(get_session)):
+    inquiry = session.get(Inquiry, inquiry_id)
+    if not inquiry:
+        raise HTTPException(status_code = 404, details = "inquriy not found")
+    for key, value in data,dict(exculde_unset = True).items():
+        session.commit()
+        session.refresh(inquiry)
+    return inquiry
+@app.get("/inquriy")
+def get_inquriy(session : Session = Depends(get_session)):
+    inquriy = session.exec(select(Inquiry)).all()
+    return inquriy
+@app.get("/inquriy/{inquriy_id}")
+def get_inquriy(inquriy_id : int, session : Session = Depends(get_session)):
+    inquriy = session.get(Inquiry,inquriy_id)
+    return inquriy
+@app.delete("/inquriy/",status_code = 204)
+def delete_inquriy(session : Session = Depends(get_session)):
+    inquiry = session.exec(select(Inquiry)).all()
+    for inquiry in inquiry:
+        session.delete(inquiry)
+        session.commit()
+    return {"details" : " all inquiry deleted "}
+
+@app.delete("/inquriy{inquriy_id}",status_code = 204)
+def delete_inquriy(inquriy_id : int, session : Session = Depends(get_session)):
+    inquiry  = session.get(Inquiry,inquriy_id)
+    if not inquiry:
+        raise HTTPException(status_code = 404, deatils = "inquriy not found")
+    session.delete(inquiry)
+    session.commit()
+    return {"details" : f"{inquriy_id} deleted "}
+
+@app.post("/feedback/")
+def create_feedback(feedback : Feedback, session   : Session = Depends(get_session)):
+    session.add(feedback)
+    session.commit()
+    session.refresh(feedback)
+    return feedback
+
+
+@app.get("/feedback/{feedback_id}")
+def get_feedback(feedback_id: int, session: Session = Depends(get_session)):
+    feedback = session.get(Feedback, feedback_id)
+    return feedback
+
+@app.get("/feedback/")
+def get_feedback(session : Session = Depends(get_session)):
+    feedback = session.exec(select(Feedback)).all()
+    return feedback
+
+@app.delete("/feedback/",status_code = 204)
+def delete_feedback(session : Session = Depends(get_session)):
+    feedback = session.exec(select(Feedback)).all()
+    for feedback in feedback:
+        session.delete(feedback)
+        session.commit()
+    return  {"details": "all feedback deleted "}
+
+@app.delete("/feedback/{feedback_id}",status_code  = 204)
+def delete_address(feedback_id : int, session : Session = Depends(get_session)):
+    feedback = session.get(Feedback,feedback_id)
+    if not feedback:
+        raise HTTPException(feedback_code = 404, details = " feedback not found")
+    session.delete(feedback)
+    session.commit()
+    return feedback
+
+@app.put("/feedback/")
+def update_feedback(data:Feedback, session: Session = Depends(get_session)):
+    feedback =  session.exec(select(Feedback)).all()
+    if not feedback:
+        raise HTTPException(status_code=404, detail="feedback not found")
+    
+    update_data = data.dict(exclude_unset=True)
+
+    for f in feedback:
+        for key, value in update_data.items():
+            setattr(f, key, value)
+
+    session.commit()
+
+   
+    for f in feedback:
+        session.refresh(f)
+
+    return feedback
+
+@app.put("/feedback/{id}")
+def update_feedback(id: int, data: Feedback, session: Session = Depends(get_session)):
+    feedback = session.get(Feedback, id)
+    if not feedback:
+        raise HTTPException(status_code=404, detail="feedback not found")
+    
+    for key, value in data.dict(exclude_unset=True).items():
+        setattr(feedback, key, value)
+
+    session.commit()
+    session.refresh(feedback)
+    
+    return feedback

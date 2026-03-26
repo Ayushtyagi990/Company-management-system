@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, Relationship
-from datetime import time, date
+from datetime import datetime, time, date
 
 
 
@@ -34,6 +34,7 @@ class Employees(SQLModel, table = True):
     id : int  | None = Field(default = None, primary_key = True)
     name : str | None = Field(default = None)
     email : str | None = Field(index = True, unique = True)
+    password : str | None = Field(index = True, unique = True)
     address_id : int | None = Field(default = None, foreign_key = "address.id")
     address : Address | None = Relationship()
     phone : str | None = Field(default = None)
@@ -244,6 +245,20 @@ class Inquiry(SQLModel, table=True):
     status: str | None = Field(default=None)
 
 
+
+
+class Feedback(SQLModel, table=True):
+    """Schema for storing feedback."""
+    id: int | None = Field(default=None, primary_key=True)
+    student_id : int  | None = Field(default = None, foreign_key = "student.id")
+    student : Student | None = Relationship()
+    course_id  : int | None = Field(default = None, foreign_key  = "course.id")
+    course : Course | None = Relationship()
+    company_id : int | None  = Field(default = None, foreign_key = "company.id")
+    company : Company | None = Relationship()
+    text: str | None = Field(default=None)
+    rating: int | None = Field(default=None)
+    created_at : datetime | None = Field(default = None)
     
 
 
