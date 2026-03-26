@@ -245,8 +245,6 @@ class Inquiry(SQLModel, table=True):
     status: str | None = Field(default=None)
 
 
-
-
 class Feedback(SQLModel, table=True):
     """Schema for storing feedback."""
     id: int | None = Field(default=None, primary_key=True)
