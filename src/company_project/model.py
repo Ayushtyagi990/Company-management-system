@@ -3,7 +3,6 @@ from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime, time, date
 
 
-
 class Address(SQLModel, table = True):
     """Schema for storing address."""
     id : int | None = Field(default = None, primary_key = True)
@@ -14,6 +13,7 @@ class Address(SQLModel, table = True):
     pincode  : int  | None = Field(default = None)
     latitude : float | None = Field(default = None)
     longtitude : float | None = Field(default = None)
+
 
 
 class Company(SQLModel, table = True):
