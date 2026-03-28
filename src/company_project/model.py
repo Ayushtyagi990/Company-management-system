@@ -51,8 +51,8 @@ class Employee(SQLModel, table = True):
 
 class Salary(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    employees_id: int | None = Field(default=None, foreign_key="employees.id")
-    employees: Employee | None = Relationship()
+    employee_id: int | None = Field(default=None, foreign_key="employee.id")
+    employee: Employee | None = Relationship()
     amount: int | None = Field(default=None)
 
 
@@ -120,8 +120,8 @@ class Discount(SQLModel, table = True):
     student : Student | None = Relationship()
     course_id  : int | None = Field(default = None, foreign_key  = "course.id")
     course : Course | None = Relationship()
-    employees_id  : int | None = Field(default = None, foreign_key = "employees.id")
-    employess : Employee | None = Relationship()
+    employee_id  : int | None = Field(default = None, foreign_key = "employee.id")
+    employee : Employee | None = Relationship()
     percentage : float | None = Field(default = None)
 
 
@@ -201,8 +201,8 @@ class Batch(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     course_id  : int | None = Field(default = None, foreign_key  = "course.id")
     course : Course | None = Relationship()
-    employees_id  : int | None = Field(default = None, foreign_key = "employees.id")
-    employess : Employee | None = Relationship()
+    employee_id  : int | None = Field(default = None, foreign_key = "employee.id")
+    employee : Employee | None = Relationship()
     start_date: date | None = Field(default=None)
     end_date: date | None = Field(default=None)
     timing: time | None = Field(default=None)
