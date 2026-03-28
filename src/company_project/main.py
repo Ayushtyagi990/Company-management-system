@@ -1,8 +1,19 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlmodel import Session, select
-from .model import Address, Company, Employees, Salary, Tax, Course, Seat, Student, Registration, Discount, Fee, Payment, Package, Penalty, Placement, Batch, Attendance, Assignment, Result, Inquiry, Certification, Feedback
+from .model import Address, Company, Employee, Salary, Tax, Course, Seat, Student, Registration, Discount, Fee, Payment, Package, Penalty, Placement, Batch, Attendance, Assignment, Result, Inquiry, Certification, Feedback
 from .database import get_session
+from passlib.context import CryptContext
 
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Returns True if plain_password matches the hashed_password.
+    """
+    return pwd_context.verify(plain_password, hashed_password)
 
 app = FastAPI()
 @app.post("/address")
@@ -142,71 +153,88 @@ def update_company(id: int, data :  Company, session: Session = Depends(get_sess
 
 
 @app.post("/Employees")
-def create_employees(employees: Employees, session: Session = Depends(get_session)):
-    session.add(employees)
-    session.commit()
-    session.refresh(employees)
-    return employees
+def create_employee(employee: Employee, session: Session = Depends(get_session)):
+    new_user = Employee(
+        id = employee.id,
+        email=employee.email,
+        name=employee.name,
+        password=hash_password(employee.password),
+        address_id = employee.id,
+        phone = employee.phone,
+        bgv = employee.bgv,
+        qualification = employee.qualification,
+        experience = employee.experience,
+        specialization = employee.specialization,
+        work_location = employee.work_location,
+        company_id = employee.company_id,
+        designation = employee.designation
+       
 
-@app.get("/employees {_id}")
-def get_employees(employees_id : int, session : Session = Depends(get_session)):
-    employees = session.get(Employees ,employees_id)
-    return employees
+    )
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
+    return new_user
+
+@app.get("/employees {employee_id}")
+def get_employees(employee_id : int, session : Session = Depends(get_session)):
+    employee = session.get(Employee ,employee_id)
+    return employee
 
 @app.get("/employees")
 def get_employees(session : Session = Depends(get_session)):
-    employees = session.exec(select(Employees)).all()
-    return employees
+    employee = session.exec(select(Employee)).all()
+    return employee
 
 @app.delete("/employees",status_code = 204)
 def delete_employees(session : Session = Depends(get_session)):
-    employees = session.exec(select(Employees)).all()
-    for employees in employees:
-        session.delete(employees)
+    employee = session.exec(select(Employee)).all()
+    for employee in employee:
+        session.delete(employee)
         session.commit()
     return  {"details": "all employees deleted "}
 
-@app.delete("employees{employees_id}",status_code  = 204)
-def delete_employees_id(employees_id : int, session : Session = Depends(get_session)):
-    employees = session.get(Employees,employees_id)
-    if not employees:
+@app.delete("employee{employee_id}",status_code  = 204)
+def delete_employee_id(employee_id : int, session : Session = Depends(get_session)):
+    employee = session.get(Employee,employee_id)
+    if not employee:
         raise HTTPException(status_code = 404, details = "employees not found")
-    session.delete(employees)
+    session.delete(employee)
     session.commit()
-    return employees
+    return employee
 
-@app.put("/employees")
-def update_employees(data: Employees, session: Session = Depends(get_session)):
-    employees =  session.exec(select(Employees)).all()
-    if not employees:
+@app.put("/employee")
+def update_employee(data: Employee, session: Session = Depends(get_session)):
+    employee =  session.exec(select(Employee)).all()
+    if not employee:
         raise HTTPException(status_code=404, detail="employees not found")
     
     update_data = data.dict(exclude_unset=True)
 
-    for e in employees:
+    for e in employee:
         for key, value in update_data.items():
             setattr(e, key, value)
 
     session.commit()
 
-    for e in employees:
+    for e in employee:
         session.refresh(e)
 
-    return employees
+    return employee
 
-@app.put("/employees/{id}")
-def update_employees(id: int, data : Employees, session: Session = Depends(get_session)):
-    employees = session.get(Employees, id)
-    if not employees:
+@app.put("/employee/{id}")
+def update_employee(id: int, data : Employee, session: Session = Depends(get_session)):
+    employee = session.get(Employee, id)
+    if not employee:
         raise HTTPException(status_code=404, detail="employees not found")
     
     for key, value in data.dict(exclude_unset=True).items():
-        setattr(employees, key, value)
+        setattr(employee, key, value)
 
     session.commit()
-    session.refresh(employees)
+    session.refresh(employee)
     
-    return employees 
+    return employee
 
 
 
@@ -1564,3 +1592,10 @@ def update_feedback(id: int, data: Feedback, session: Session = Depends(get_sess
     session.refresh(feedback)
     
     return feedback
+
+@app.post("/login")
+def login(user: Employee, session: Session = Depends(get_session)):
+    db_user = session.exec(select(Employee).where(Employee.email == user.email)).first()
+    if not db_user or not verify_password(user.password, db_user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return {"message": "Login successful", "user_id": db_user.id, "user_name": db_user.name}

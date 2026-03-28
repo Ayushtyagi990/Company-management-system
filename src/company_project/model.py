@@ -25,11 +25,12 @@ class Company(SQLModel, table = True):
     address : Address | None = Relationship()
     phone : str | None = Field(default = None)
     type : str | None  = Field(default = None)
+    total_hiring : int | None = Field(default = None)
     opening_time : time | None = Field(default = None)
     closing_time : time | None = Field(default = None)
 
 
-class Employees(SQLModel, table = True):
+class Employee(SQLModel, table = True):
     """Schema for storing employees."""
     id : int  | None = Field(default = None, primary_key = True)
     name : str | None = Field(default = None)
@@ -51,7 +52,7 @@ class Employees(SQLModel, table = True):
 class Salary(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     employees_id: int | None = Field(default=None, foreign_key="employees.id")
-    employees: Employees | None = Relationship()
+    employees: Employee | None = Relationship()
     amount: int | None = Field(default=None)
 
 
@@ -69,8 +70,7 @@ class Course(SQLModel, table = True):
     name : str | None = Field(default = None)
     duration  : str | None = Field(default = None)
     type : str | None = Field(default = None)
-    status : str | None = Field(default = None)
-    timing : time  | None = Field(default = None)
+    status : bool | None = Field(default = None)
     company_id : int | None  = Field(default = None, foreign_key = "company.id")
     company : Company | None = Relationship()
 
@@ -121,7 +121,7 @@ class Discount(SQLModel, table = True):
     course_id  : int | None = Field(default = None, foreign_key  = "course.id")
     course : Course | None = Relationship()
     employees_id  : int | None = Field(default = None, foreign_key = "employees.id")
-    employess : Employees | None = Relationship()
+    employess : Employee | None = Relationship()
     percentage : float | None = Field(default = None)
 
 
@@ -131,7 +131,7 @@ class Penalty(SQLModel, table = True):
     student_id : int  | None = Field(default = None, foreign_key = "student.id")
     student : Student | None = Relationship()
     amount : int | None = Field(default = None)
-    status : str | None = Field(default = None)
+    status : bool | None = Field(default = None)
 
 
 class Fee(SQLModel, table = True):
@@ -157,7 +157,7 @@ class Payment(SQLModel, table = True):
     type : str  | None = Field(default = None)
     methodes : str | None = Field(default = None)
     payment_time : time | None = Field(default = None)
-    status : str | None = Field(default = None)
+    status : bool | None = Field(default = None)
 
 
 class Certification(SQLModel, table = True):
@@ -202,7 +202,7 @@ class Batch(SQLModel, table=True):
     course_id  : int | None = Field(default = None, foreign_key  = "course.id")
     course : Course | None = Relationship()
     employees_id  : int | None = Field(default = None, foreign_key = "employees.id")
-    employess : Employees | None = Relationship()
+    employess : Employee | None = Relationship()
     start_date: date | None = Field(default=None)
     end_date: date | None = Field(default=None)
     timing: time | None = Field(default=None)
@@ -217,7 +217,7 @@ class Attendance(SQLModel, table=True):
     batch_id: int | None = Field(default = None, foreign_key="batch.id")
     batch : Batch | None = Relationship()
     a_date: date | None = Field(default=None)
-    status: str | None = Field(default=None) 
+    status: bool | None = Field(default=None) 
 
 class Assignment(SQLModel, table=True):
     """Schema for storing Assignment."""
@@ -242,7 +242,7 @@ class Inquiry(SQLModel, table=True):
     name: str | None = Field(default=None)
     phone: str | None = Field(default=None)
     course_interest: str | None = Field(default=None)
-    status: str | None = Field(default=None)
+    status: bool | None = Field(default=None)
 
 
 class Feedback(SQLModel, table=True):
