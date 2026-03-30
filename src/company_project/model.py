@@ -258,12 +258,6 @@ class Feedback(SQLModel, table=True):
     rating: int | None = Field(default=None)
     created_at : datetime | None = Field(default = None)
 
-class checkout(SQLModel, table = True):
-    id: int | None = Field(default=None, primary_key=True)
-    student_id : int  | None = Field(default = None, foreign_key = "student.id")
-    student : Student | None = Relationship()
-    course_id  : int | None = Field(default = None, foreign_key  = "course.id")
-    course : Course | None = Relationship()
 
 
 
